@@ -3,7 +3,6 @@ package mp4
 import (
 	"encoding/binary"
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -22,7 +21,6 @@ func Open(path string) (f *File, err error) {
 
 	f = &File{
 		File: file,
-		r:    io.ReadSeeker(file),
 	}
 
 	return f, f.parse()
@@ -30,8 +28,8 @@ func Open(path string) (f *File, err error) {
 
 type File struct {
 	*os.File
-	r    io.ReadSeeker
 	Ftyp *FtypBox
+	Moov *MoovBox
 	size int64
 }
 
@@ -45,19 +43,19 @@ func (f *File) parse() error {
 	// fmt.Printf("Filesize: %v \n", info.Size())
 	f.size = info.Size()
 
-	boxes := readBoxes(f, f.r, int64(0), f.size)
+	boxes := readBoxes(f, int64(0), f.size)
 	for _, box := range boxes {
 		switch box.Name {
 		case "ftyp":
-			fmt.Println("found ftyp")
 			f.Ftyp = &FtypBox{Box: box}
 			f.Ftyp.parse()
 		case "wide":
-			fmt.Println("found wide")
+			// fmt.Println("found wide")
 		case "mdat":
-			fmt.Println("found mdat")
+			// fmt.Println("found mdat")
 		case "moov":
-			fmt.Println("found moov")
+			f.Moov = &MoovBox{Box: box}
+			f.Moov.parse()
 		}
 	}
 	return nil
@@ -94,24 +92,12 @@ func (b *Box) ReadBoxData() []byte {
 	return b.File.ReadBytesAt(b.Size-BoxHeaderSize, b.Start+BoxHeaderSize)
 }
 
-func readBoxes(f *File, r io.ReadSeeker, start int64, n int64) (l []*Box) {
-
+func readBoxes(f *File, start int64, n int64) (l []*Box) {
 	for offset := start; offset < start+n; {
-		taghdr := make([]byte, 8)
-		if _, err := io.ReadFull(r, taghdr); err != nil {
-			if err == io.EOF {
-				err = nil
-			}
-			return
-		}
-
-		size := binary.BigEndian.Uint32(taghdr[0:])
-		tag := taghdr[4:]
-
-		fmt.Println(size, string(tag))
+		size, name := f.ReadBoxAt(offset)
 
 		b := &Box{
-			Name:  string(tag),
+			Name:  string(name),
 			Size:  int64(size),
 			File:  f,
 			Start: offset,
@@ -119,10 +105,6 @@ func readBoxes(f *File, r io.ReadSeeker, start int64, n int64) (l []*Box) {
 
 		l = append(l, b)
 		offset += int64(size)
-		if _, err := r.Seek(int64(size)-8, 1); err != nil {
-			return
-		}
 	}
-
 	return l
 }

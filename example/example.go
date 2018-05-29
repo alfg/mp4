@@ -7,18 +7,16 @@ import (
 )
 
 func main() {
-	fmt.Println("hello")
-
-	// file, _ := os.Open("videos/ToS-4k-1920.mp4")
-	// // fileInfo, _ := file.Stat()
-
-	// mp4 := mp4.NewDemuxer(file)
-	// mp4.Streams()
-
-	// fmt.Println("filesize: ", fileInfo.Size())
-	// fmt.Println("duration:")
-
 	file, _ := mp4.Open("videos/ToS-4k-1920.mp4")
 	file.Close()
-	fmt.Println(file.Ftyp.CompatibleBrands)
+
+	// fmt.Println(file.Ftyp.Name)
+	// fmt.Println(file.Ftyp.MajorBrand)
+	// fmt.Println(file.Ftyp.MinorVersion)
+	// fmt.Println(file.Ftyp.CompatibleBrands)
+
+	fmt.Println(file.Moov.Name, file.Moov.Size)
+	fmt.Println(file.Moov.Mvhd.Name)
+	fmt.Println(file.Moov.Mvhd.Version)
+	fmt.Println(file.Moov.Mvhd.Volume)
 }
