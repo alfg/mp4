@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// MoovBox defines the moov box structure.
 type MoovBox struct {
 	*Box
 	Mvhd  *MvhdBox
@@ -43,6 +44,7 @@ func (b *MoovBox) parse() error {
 	return nil
 }
 
+// MvhdBox defines the mvhd box structure.
 type MvhdBox struct {
 	*Box
 	Flags            uint32
@@ -62,6 +64,7 @@ func (b *MvhdBox) parse() error {
 	return nil
 }
 
+// TrakBox defines the trak box structure.
 type TrakBox struct {
 	*Box
 	// Tkhd *TkhdBox
@@ -92,7 +95,7 @@ func (b *TrakBox) parse() error {
 	return nil
 }
 
-// An 8.8 Fixed Point Decimal notation
+// Fixed16 is an 8.8 Fixed Point Decimal notation
 type Fixed16 uint16
 
 func (f Fixed16) String() string {

@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 )
 
-// FtypBox decodes a ftyp box.
+// FtypBox defines the ftyp box.
 type FtypBox struct {
 	*Box
 	MajorBrand       string

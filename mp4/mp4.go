@@ -26,6 +26,7 @@ func Open(path string) (f *File, err error) {
 	return f, f.parse()
 }
 
+// File defines a file structure.
 type File struct {
 	*os.File
 	Ftyp *FtypBox
@@ -63,6 +64,7 @@ func (f *File) parse() error {
 	return nil
 }
 
+// ReadBoxAt reads a box from an offset.
 func (f *File) ReadBoxAt(offset int64) (boxSize uint32, boxType string) {
 	buf := f.ReadBytesAt(BoxHeaderSize, offset)
 	boxSize = binary.BigEndian.Uint32(buf[0:4])
@@ -72,6 +74,7 @@ func (f *File) ReadBoxAt(offset int64) (boxSize uint32, boxType string) {
 	return boxSize, boxType
 }
 
+// ReadBytesAt reads a box at n and offset.
 func (f *File) ReadBytesAt(n int64, offset int64) (word []byte) {
 	buf := make([]byte, n)
 	if _, error := f.ReadAt(buf, offset); error != nil {
@@ -81,12 +84,14 @@ func (f *File) ReadBytesAt(n int64, offset int64) (word []byte) {
 	return buf
 }
 
+// Box defines an Atom Box structure.
 type Box struct {
 	Name        string
 	Size, Start int64
 	File        *File
 }
 
+// ReadBoxData reads the box data from an atom box.
 func (b *Box) ReadBoxData() []byte {
 	if b.Size <= BoxHeaderSize {
 		return nil
