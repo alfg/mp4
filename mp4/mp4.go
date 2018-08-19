@@ -30,6 +30,7 @@ type File struct {
 	*os.File
 	Ftyp *FtypBox
 	Moov *MoovBox
+	Mdat *MdatBox
 	size int64
 }
 
@@ -50,9 +51,10 @@ func (f *File) parse() error {
 			f.Ftyp = &FtypBox{Box: box}
 			f.Ftyp.parse()
 		case "wide":
-			// fmt.Println("found wide")
+			fmt.Println("found wide")
 		case "mdat":
-			// fmt.Println("found mdat")
+			f.Mdat = &MdatBox{Box: box}
+			// No mdat boxes to parse
 		case "moov":
 			f.Moov = &MoovBox{Box: box}
 			f.Moov.parse()

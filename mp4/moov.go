@@ -7,7 +7,8 @@ import (
 
 type MoovBox struct {
 	*Box
-	Mvhd *MvhdBox
+	Mvhd  *MvhdBox
+	Traks []*TrakBox
 }
 
 // func readSubBoxes(f *File, start int64, n int64) (boxes chan *Box) {
@@ -24,6 +25,18 @@ func (b *MoovBox) parse() error {
 			fmt.Println("found mvhd")
 			b.Mvhd = &MvhdBox{Box: box}
 			b.Mvhd.parse()
+
+		case "iods":
+			fmt.Println("found iods")
+
+		case "trak":
+			fmt.Println("found trak")
+			trak := &TrakBox{Box: box}
+			trak.parse()
+			b.Traks = append(b.Traks, trak)
+
+		case "udta":
+			fmt.Println("found udta")
 		}
 
 	}
@@ -46,6 +59,36 @@ func (b *MvhdBox) parse() error {
 	data := b.ReadBoxData()
 	b.Version = data[0]
 	b.Volume = fixed16(data[24:26])
+	return nil
+}
+
+type TrakBox struct {
+	*Box
+	// Tkhd *TkhdBox
+	// mdia *MdiaBox
+	// edts *EdtsBox
+	// chunks []Chunk
+	// samples []Sample
+}
+
+func (b *TrakBox) parse() error {
+	// fmt.Println("read subboxes starting from ", b.Start, "with size: ", b.Size)
+	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+
+	for _, box := range boxes {
+		switch box.Name {
+		case "tkhd":
+			fmt.Println("found tkhd")
+
+		case "mdia":
+			fmt.Println("found mdia")
+
+		case "edts":
+			fmt.Println("found edts")
+
+		}
+		return nil
+	}
 	return nil
 }
 
