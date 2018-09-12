@@ -1,11 +1,11 @@
-package cmd
+package main
 
 import (
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/alfg/mp4/mp4"
+	"github.com/alfg/mp4"
 )
 
 var input string

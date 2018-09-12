@@ -11,8 +11,8 @@ go get -u github.com/alfg/mp4
 package main
 
 import (
-	"fmt"
-	"github.com/alfg/mp4/mp4"
+    "fmt"
+    "github.com/alfg/mp4/mp4"
 )
 
 func main() {
@@ -30,6 +30,11 @@ See [example.go](/example/example.go) for a full example.
 ```
 git clone github.com/alfg/mp4
 go run example/example.go
+```
+
+Or build the CLI:
+```
+go build -o mp4.exe cmd\mp4\mp4.go
 ```
 
 ## License
