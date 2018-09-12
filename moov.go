@@ -23,21 +23,19 @@ func (b *MoovBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "mvhd":
-			fmt.Println("found mvhd")
 			b.Mvhd = &MvhdBox{Box: box}
 			b.Mvhd.parse()
 
 		case "iods":
-			fmt.Println("found iods")
+			// fmt.Println("found iods")
 
 		case "trak":
-			fmt.Println("found trak")
 			trak := &TrakBox{Box: box}
 			trak.parse()
 			b.Traks = append(b.Traks, trak)
 
 		case "udta":
-			fmt.Println("found udta")
+			// fmt.Println("found udta")
 		}
 
 	}
@@ -53,13 +51,16 @@ type MvhdBox struct {
 	ModificationTime uint32
 	Timescale        uint32
 	Duration         uint32
-	Rate             uint32
+	Rate             Fixed32
 	Volume           Fixed16
 }
 
 func (b *MvhdBox) parse() error {
 	data := b.ReadBoxData()
 	b.Version = data[0]
+	b.Timescale = binary.BigEndian.Uint32(data[12:16])
+	b.Duration = binary.BigEndian.Uint32(data[16:20])
+	b.Rate = fixed32(data[20:24])
 	b.Volume = fixed16(data[24:26])
 	return nil
 }
@@ -81,13 +82,13 @@ func (b *TrakBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "tkhd":
-			fmt.Println("found tkhd")
+			// fmt.Println("found tkhd")
 
 		case "mdia":
-			fmt.Println("found mdia")
+			// fmt.Println("found mdia")
 
 		case "edts":
-			fmt.Println("found edts")
+			// fmt.Println("found edts")
 
 		}
 		return nil
@@ -104,4 +105,11 @@ func (f Fixed16) String() string {
 
 func fixed16(bytes []byte) Fixed16 {
 	return Fixed16(binary.BigEndian.Uint16(bytes))
+}
+
+// Fixed32 is a 16.16 Fixed Point Decimal notation
+type Fixed32 uint32
+
+func fixed32(bytes []byte) Fixed32 {
+	return Fixed32(binary.BigEndian.Uint32(bytes))
 }

@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
-	"github.com/alfg/mp4/mp4"
+	"github.com/alfg/mp4"
 )
 
 func main() {
-	file, _ := mp4.Open("videos/ToS-4k-1920.mp4")
+	file, _ := mp4.Open("test/tears-of-steel.mp4")
 	file.Close()
 
 	// fmt.Println(file.Ftyp.Name)
@@ -19,4 +19,8 @@ func main() {
 	fmt.Println(file.Moov.Mvhd.Name)
 	fmt.Println(file.Moov.Mvhd.Version)
 	fmt.Println(file.Moov.Mvhd.Volume)
+
+	fmt.Println("trak size: ", file.Moov.Traks[0].Size)
+	fmt.Println("trak size: ", file.Moov.Traks[1].Size)
+	fmt.Println("mdat size: ", file.Mdat.Size)
 }
