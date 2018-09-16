@@ -1,6 +1,8 @@
 # MP4
 Basic MP4 parser in Go!
 
+*work-in-progress*
+
 ## Usage
 
 ```
@@ -25,12 +27,15 @@ func main() {
 
 See [example.go](/example/example.go) for a full example.
 
-# Develop 
+## Develop 
 
 ```
 git clone github.com/alfg/mp4
 go run example/example.go
 ```
+## TODO
+* Add more atoms
+* Tests
 
 Or build the CLI:
 ```
