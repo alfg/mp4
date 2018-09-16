@@ -5,11 +5,20 @@ import (
 	"fmt"
 )
 
+// Flag constants.
+const (
+	TrackFlagEnabled   = 0x0001
+	TrackFlagInMovie   = 0x0002
+	TrackFlagInPreview = 0x0004
+)
+
 // MoovBox defines the moov box structure.
 type MoovBox struct {
 	*Box
 	Mvhd  *MvhdBox
 	Traks []*TrakBox
+
+	IsFragmented bool // check for mvex box exists
 }
 
 // func readSubBoxes(f *File, start int64, n int64) (boxes chan *Box) {
@@ -36,6 +45,10 @@ func (b *MoovBox) parse() error {
 
 		case "udta":
 			// fmt.Println("found udta")
+
+		case "mvex":
+			fmt.Println("found mvex")
+			b.IsFragmented = true
 		}
 
 	}
@@ -68,7 +81,7 @@ func (b *MvhdBox) parse() error {
 // TrakBox defines the trak box structure.
 type TrakBox struct {
 	*Box
-	// Tkhd *TkhdBox
+	Tkhd *TkhdBox
 	// mdia *MdiaBox
 	// edts *EdtsBox
 	// chunks []Chunk
@@ -82,7 +95,9 @@ func (b *TrakBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "tkhd":
-			// fmt.Println("found tkhd")
+			fmt.Println("found tkhd")
+			b.Tkhd = &TkhdBox{Box: box}
+			b.Tkhd.parse()
 
 		case "mdia":
 			// fmt.Println("found mdia")
@@ -96,20 +111,36 @@ func (b *TrakBox) parse() error {
 	return nil
 }
 
-// Fixed16 is an 8.8 Fixed Point Decimal notation
-type Fixed16 uint16
-
-func (f Fixed16) String() string {
-	return fmt.Sprintf("%v", uint16(f)>>8)
+// TkhdBox defines the track header box structure.
+type TkhdBox struct {
+	*Box
+	Version          byte
+	Flags            uint32
+	CreationTime     uint32
+	ModificationTime uint32
+	TrackID          uint32
+	Duration         uint32
+	Layer            uint16
+	AlternateGroup   uint16
+	Volume           Fixed16
+	Matrix           []byte
+	Width, Height    Fixed32
 }
 
-func fixed16(bytes []byte) Fixed16 {
-	return Fixed16(binary.BigEndian.Uint16(bytes))
-}
-
-// Fixed32 is a 16.16 Fixed Point Decimal notation
-type Fixed32 uint32
-
-func fixed32(bytes []byte) Fixed32 {
-	return Fixed32(binary.BigEndian.Uint32(bytes))
+func (b *TkhdBox) parse() error {
+	data := b.ReadBoxData()
+	b.Version = data[0]
+	// b.Flags = [3]byte{data[1], data[2], data[3]}
+	b.Flags = binary.BigEndian.Uint32(data[0:4])
+	b.CreationTime = binary.BigEndian.Uint32(data[4:8])
+	b.ModificationTime = binary.BigEndian.Uint32(data[8:12])
+	b.TrackID = binary.BigEndian.Uint32(data[12:16])
+	b.Duration = binary.BigEndian.Uint32(data[20:24])
+	b.Layer = binary.BigEndian.Uint16(data[32:34])
+	b.AlternateGroup = binary.BigEndian.Uint16(data[34:36])
+	b.Volume = fixed16(data[36:38])
+	b.Matrix = data[40:76]
+	b.Width = fixed32(data[76:80])
+	b.Height = fixed32(data[80:84])
+	return nil
 }

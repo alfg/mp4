@@ -33,6 +33,8 @@ type File struct {
 	Moov *MoovBox
 	Mdat *MdatBox
 	Size int64
+
+	IsFragmented bool
 }
 
 func (f *File) parse() error {
@@ -59,6 +61,8 @@ func (f *File) parse() error {
 		case "moov":
 			f.Moov = &MoovBox{Box: box}
 			f.Moov.parse()
+
+			f.IsFragmented = f.Moov.IsFragmented
 		}
 	}
 	return nil
