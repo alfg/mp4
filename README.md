@@ -33,14 +33,16 @@ See [example.go](/example/example.go) for a full example.
 git clone github.com/alfg/mp4
 go run example/example.go
 ```
-## TODO
-* Add more atoms
-* Tests
 
 Or build the CLI:
 ```
-go build -o mp4.exe cmd\mp4\mp4.go
+go build -o mp4info.exe cmd\mp4info\mp4info.go
+mp4info -i test/tears-of-steel.mp4
 ```
+
+## TODO
+* Add more atoms
+* Tests
 
 ## License
 MIT
