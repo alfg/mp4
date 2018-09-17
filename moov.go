@@ -22,7 +22,7 @@ type MoovBox struct {
 }
 
 // func readSubBoxes(f *File, start int64, n int64) (boxes chan *Box) {
-// 	return readBoxes(f, start+BOX_HEADER_SIZE, n-BOX_HEADER_SIZE)
+// 	return readBoxes(f, start+BoxHeaderSize, n-BoxHeaderSize)
 // }
 
 func (b *MoovBox) parse() error {
@@ -82,7 +82,7 @@ func (b *MvhdBox) parse() error {
 type TrakBox struct {
 	*Box
 	Tkhd *TkhdBox
-	// mdia *MdiaBox
+	Mdia *MdiaBox
 	// edts *EdtsBox
 	// chunks []Chunk
 	// samples []Sample
@@ -95,18 +95,16 @@ func (b *TrakBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "tkhd":
-			fmt.Println("found tkhd")
 			b.Tkhd = &TkhdBox{Box: box}
 			b.Tkhd.parse()
 
 		case "mdia":
-			// fmt.Println("found mdia")
+			b.Mdia = &MdiaBox{Box: box}
+			b.Mdia.parse()
 
 		case "edts":
 			// fmt.Println("found edts")
-
 		}
-		return nil
 	}
 	return nil
 }
@@ -142,5 +140,44 @@ func (b *TkhdBox) parse() error {
 	b.Matrix = data[40:76]
 	b.Width = fixed32(data[76:80])
 	b.Height = fixed32(data[80:84])
+	return nil
+}
+
+// MdiaBox defines the mdia box structure.
+type MdiaBox struct {
+	*Box
+	Hdlr *HdlrBox
+	// Mdhd *MdhdBox
+	// Minf *MinfBox
+}
+
+func (b *MdiaBox) parse() error {
+	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+
+	for _, box := range boxes {
+		switch box.Name {
+		case "hdlr":
+			b.Hdlr = &HdlrBox{Box: box}
+			b.Hdlr.parse()
+		}
+	}
+	return nil
+}
+
+// HdlrBox defines the hdlr box structure.
+type HdlrBox struct {
+	*Box
+	Version byte
+	Flags   uint32
+	Handler string
+	Name    string
+}
+
+func (b *HdlrBox) parse() error {
+	data := b.ReadBoxData()
+	b.Version = data[0]
+	b.Flags = binary.BigEndian.Uint32(data[0:4])
+	b.Handler = string(data[8:12])
+	b.Name = string(data[24 : b.Size-BoxHeaderSize])
 	return nil
 }

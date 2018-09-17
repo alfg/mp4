@@ -32,27 +32,37 @@ func main() {
 
 	// Print out mp4 info.
 	fmt.Println("File:")
-	fmt.Printf("  file Size: %d\n", f.Size)
-	fmt.Printf("  brands: %s, %s\n\n", f.Ftyp.MajorBrand, f.Ftyp.CompatibleBrands)
+	fmt.Printf("  file Size:	%d\n", f.Size)
+	fmt.Printf("  brands:	%s, %s\n\n", f.Ftyp.MajorBrand, f.Ftyp.CompatibleBrands)
 
 	fmt.Println("Movie:")
-	fmt.Printf("  duration / Timescale: %d / %d (%s)\n",
+	fmt.Printf("  duration:	%d ms / %d (%s)\n",
 		f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale,
 		mp4.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
-	fmt.Printf("  fragments: %t\n", f.IsFragmented)
-	fmt.Printf("  timescale: %d\n\n", f.Moov.Mvhd.Timescale)
+	fmt.Printf("  fragments:	%t\n", f.IsFragmented)
+	fmt.Printf("  timescale:	%d\n\n", f.Moov.Mvhd.Timescale)
 
 	fmt.Printf("Found %d Tracks\n\n", len(f.Moov.Traks))
 
 	for _, trak := range f.Moov.Traks {
 		fmt.Printf("Track %d:\n", trak.Tkhd.TrackID)
-		fmt.Printf("  flags: %d %s\n", trak.Tkhd.Flags, getFlags(trak.Tkhd.Flags))
-		fmt.Printf("  id: %d\n", trak.Tkhd.TrackID)
-		fmt.Printf("  duration: %d\n", trak.Tkhd.Duration)
-		fmt.Printf("  width: %d\n", trak.Tkhd.Width/(1<<16))
-		fmt.Printf("  height: %d\n", trak.Tkhd.Height/(1<<16))
-		fmt.Printf("  type: %s", "test\n") // Check hdlr.
+		fmt.Printf("  flags:	%d %s\n", trak.Tkhd.Flags, getFlags(trak.Tkhd.Flags))
+		fmt.Printf("  id:		%d\n", trak.Tkhd.TrackID)
+		fmt.Printf("  duration:	%d ms\n", trak.Tkhd.Duration)
+		fmt.Printf("  width:	%d\n", trak.Tkhd.Width/(1<<16))
+		fmt.Printf("  height:	%d\n", trak.Tkhd.Height/(1<<16))
+		fmt.Printf("  type:		%s\n", getHandlerType(trak.Mdia.Hdlr.Handler))
 	}
+}
+
+func getHandlerType(handler string) string {
+	var t string
+	if handler == "vide" {
+		t = "Video"
+	} else if handler == "soun" {
+		t = "Sound"
+	}
+	return t
 }
 
 func getFlags(flags uint32) string {
