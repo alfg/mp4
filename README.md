@@ -14,7 +14,7 @@ package main
 
 import (
     "fmt"
-    "github.com/alfg/mp4/mp4"
+    "github.com/alfg/mp4"
 )
 
 func main() {
