@@ -282,7 +282,6 @@ func (b *StblBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "stts":
-			fmt.Println("found stts")
 			b.Stts = &SttsBox{Box: box}
 			b.Stts.parse()
 		}
