@@ -148,7 +148,7 @@ type MdiaBox struct {
 	*Box
 	Hdlr *HdlrBox
 	Mdhd *MdhdBox
-	// Minf *MinfBox
+	Minf *MinfBox
 }
 
 func (b *MdiaBox) parse() error {
@@ -163,6 +163,10 @@ func (b *MdiaBox) parse() error {
 		case "mdhd":
 			b.Mdhd = &MdhdBox{Box: box}
 			b.Mdhd.parse()
+
+		case "minf":
+			b.Minf = &MinfBox{Box: box}
+			b.Minf.parse()
 		}
 	}
 	return nil
@@ -221,4 +225,94 @@ func getLanguageString(language uint16) string {
 		string(lang[0]+0x60),
 		string(lang[1]+0x60),
 		string(lang[2]+0x60))
+}
+
+// MinfBox defines the minf box structure.
+type MinfBox struct {
+	*Box
+	Vmhd *VmhdBox
+	// Dinf *DinfBox
+	Stbl *StblBox
+}
+
+func (b *MinfBox) parse() error {
+	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+
+	for _, box := range boxes {
+		switch box.Name {
+		case "vmhd":
+			b.Vmhd = &VmhdBox{Box: box}
+			b.Vmhd.parse()
+
+		case "stbl":
+			b.Stbl = &StblBox{Box: box}
+			b.Stbl.parse()
+		}
+	}
+	return nil
+}
+
+// VmhdBox defines the vmhd box structure.
+type VmhdBox struct {
+	*Box
+	Version      byte
+	Flags        uint32
+	GraphicsMode uint16
+	OpColor      uint16
+}
+
+func (b *VmhdBox) parse() error {
+	data := b.ReadBoxData()
+	b.Version = data[0]
+	b.Flags = binary.BigEndian.Uint32(data[0:4])
+	b.GraphicsMode = binary.BigEndian.Uint16(data[4:6])
+	b.OpColor = binary.BigEndian.Uint16(data[6:8])
+	return nil
+}
+
+// StblBox defines the stbl box structure.
+type StblBox struct {
+	*Box
+	Stts *SttsBox
+}
+
+func (b *StblBox) parse() error {
+	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+
+	for _, box := range boxes {
+		switch box.Name {
+		case "stts":
+			fmt.Println("found stts")
+			b.Stts = &SttsBox{Box: box}
+			b.Stts.parse()
+		}
+	}
+	return nil
+}
+
+// SttsBox defines the stts box structure.
+type SttsBox struct {
+	*Box
+	Version      byte
+	Flags        uint32
+	EntryCount   uint32
+	SampleCounts []uint32
+	SampleDeltas []uint32
+}
+
+func (b *SttsBox) parse() error {
+	data := b.ReadBoxData()
+
+	b.Version = data[0]
+	b.Flags = binary.BigEndian.Uint32(data[0:4])
+
+	count := binary.BigEndian.Uint32(data[4:8])
+	b.SampleCounts = make([]uint32, count)
+	b.SampleDeltas = make([]uint32, count)
+
+	for i := 0; i < int(count); i++ {
+		b.SampleCounts[i] = binary.BigEndian.Uint32(data[(8 + 8*i):(12 + 8*i)])
+		b.SampleDeltas[i] = binary.BigEndian.Uint32(data[(12 + 8*i):(16 + 8*i)])
+	}
+	return nil
 }
