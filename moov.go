@@ -81,6 +81,10 @@ func (b *MvhdBox) parse() error {
 // TrakBox defines the trak box structure.
 type TrakBox struct {
 	*Box
+	// SamplesDuration
+	// SamplesSize
+	// SampleGroupsInfo
+
 	Tkhd *TkhdBox
 	Mdia *MdiaBox
 	// edts *EdtsBox
@@ -108,6 +112,11 @@ func (b *TrakBox) parse() error {
 	}
 	return nil
 }
+
+// func (b *TrakBox) Size() (sz int) {
+//     sz += b.Tkhd.Size
+// 	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+// }
 
 // TkhdBox defines the track header box structure.
 type TkhdBox struct {
@@ -141,6 +150,16 @@ func (b *TkhdBox) parse() error {
 	b.Width = fixed32(data[76:80])
 	b.Height = fixed32(data[80:84])
 	return nil
+}
+
+// GetWidth returns a calculated tkhd width.
+func (b *TkhdBox) GetWidth() Fixed32 {
+	return b.Width / (1 << 16)
+}
+
+// GetHeight returns a calculated tkhd height.
+func (b *TkhdBox) GetHeight() Fixed32 {
+	return b.Height / (1 << 16)
 }
 
 // MdiaBox defines the mdia box structure.
@@ -274,6 +293,7 @@ func (b *VmhdBox) parse() error {
 type StblBox struct {
 	*Box
 	Stts *SttsBox
+	Stsd *StsdBox
 }
 
 func (b *StblBox) parse() error {
@@ -282,8 +302,14 @@ func (b *StblBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "stts":
+			fmt.Println("found stts")
 			b.Stts = &SttsBox{Box: box}
 			b.Stts.parse()
+
+		case "stsd":
+			fmt.Println("found stsd")
+			b.Stsd = &StsdBox{Box: box}
+			b.Stsd.parse()
 		}
 	}
 	return nil
@@ -313,5 +339,43 @@ func (b *SttsBox) parse() error {
 		b.SampleCounts[i] = binary.BigEndian.Uint32(data[(8 + 8*i):(12 + 8*i)])
 		b.SampleDeltas[i] = binary.BigEndian.Uint32(data[(12 + 8*i):(16 + 8*i)])
 	}
+	return nil
+}
+
+// StsdBox defines the stsd box structure.
+type StsdBox struct {
+	*Box
+	Version byte
+	Flags   uint32
+	Avc1    *Avc1Box
+}
+
+func (b *StsdBox) parse() error {
+	data := b.ReadBoxData()
+	b.Version = data[0]
+	b.Flags = binary.BigEndian.Uint32(data[0:4])
+
+	boxes := readBoxes(b.File, b.Start+BoxHeaderSize+8, b.Size-BoxHeaderSize) // Skip extra 8 bytes.
+
+	for _, box := range boxes {
+		switch box.Name {
+		case "avc1":
+			fmt.Println("found avc1")
+			b.Avc1 = &Avc1Box{Box: box}
+			b.Avc1.parse()
+		}
+	}
+	return nil
+}
+
+// Avc1Box defines the avc1 box structure.
+type Avc1Box struct {
+	*Box
+	Version byte
+}
+
+func (b *Avc1Box) parse() error {
+	data := b.ReadBoxData()
+	b.Version = data[0]
 	return nil
 }
