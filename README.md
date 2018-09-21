@@ -1,7 +1,9 @@
 # MP4
 Basic MP4 parser in Go!
 
-*work-in-progress*
+https://godoc.org/github.com/alfg/mp4
+
+[![Build Status](https://travis-ci.org/alfg/mp4.svg?branch=master)](https://travis-ci.org/alfg/mp4) [![GoDoc](https://godoc.org/github.com/alfg/mp4?status.svg)](https://godoc.org/github.com/alfg/mp4)  
 
 ## Usage
 

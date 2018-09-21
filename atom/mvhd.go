@@ -1,6 +1,8 @@
 package atom
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+)
 
 // MvhdBox defines the mvhd box structure.
 type MvhdBox struct {

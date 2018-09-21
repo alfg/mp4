@@ -1,6 +1,8 @@
 package atom
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+)
 
 // TkhdBox defines the track header box structure.
 type TkhdBox struct {
