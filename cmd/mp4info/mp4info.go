@@ -73,8 +73,6 @@ func main() {
 			fmt.Printf("  frame rate (computed): %.2f\n", float64(sampleCounts)/durationMs)
 		}
 		fmt.Println("")
-
-		fmt.Println("Sample Description")
 	}
 
 }

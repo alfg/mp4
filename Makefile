@@ -1,12 +1,16 @@
 BINARY=mp4
 
-.PHONY: all
-all: mp4 
 
-mp4: cmd/mp4/mp4.go
-	go build -o ${BINARY} cmd/mp4/mp4.go
+.PHONY: test
+test:
+	go test ./...
 
-test: go test ./...
+build:
+	go build
+
+mp4info:
+	go build -o ${BINARY} cmd/mp4info/mp4info.go
 
 .PHONY: clean
-clean: rm -r ${BINARY}
+clean:
+	rm -r ${BINARY}
