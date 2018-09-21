@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/alfg/mp4"
+	"github.com/alfg/mp4/atom"
 )
 
 var input string
@@ -39,7 +40,7 @@ func main() {
 	fmt.Println("Movie:")
 	fmt.Printf("  duration: %d ms / %d (%s)\n",
 		f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale,
-		mp4.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
+		atom.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
 	fmt.Printf("  fragments:    %t\n", f.IsFragmented)
 	fmt.Printf("  timescale:    %d\n\n", f.Moov.Mvhd.Timescale)
 
@@ -90,15 +91,15 @@ func getHandlerType(handler string) string {
 
 func getFlags(flags uint32) string {
 	var f []string
-	if flags&mp4.TrackFlagEnabled == mp4.TrackFlagEnabled {
+	if flags&atom.TrackFlagEnabled == atom.TrackFlagEnabled {
 		f = append(f, "ENABLED")
 	}
 
-	if flags&mp4.TrackFlagInMovie == mp4.TrackFlagInMovie {
+	if flags&atom.TrackFlagInMovie == atom.TrackFlagInMovie {
 		f = append(f, "IN-MOVIE")
 	}
 
-	if flags&mp4.TrackFlagInPreview == mp4.TrackFlagInPreview {
+	if flags&atom.TrackFlagInPreview == atom.TrackFlagInPreview {
 		f = append(f, "IN-PREVIEW")
 	}
 	str := strings.Join(f, " ")
