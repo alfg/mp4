@@ -46,9 +46,9 @@ go build -o mp4info.exe cmd\mp4info\mp4info.go
 mp4info -i test/tears-of-steel.mp4
 ```
 
-## TODO
-* Add more atoms
-* Tests
+## Documentation
+* [GoDocs](https://godoc.org/github.com/alfg/mp4)
+* [ISO/IEC 14496-12](/docs)
 
 ## License
 MIT
