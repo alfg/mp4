@@ -1,6 +1,8 @@
 # MP4
 Basic MP4 parser in Go!
 
+CLI and library for ISO/IEC 14496-12 - ISO Base Media File Format (QuickTime, MPEG-4, HEIF, etc) 
+
 https://godoc.org/github.com/alfg/mp4
 
 [![Build Status](https://travis-ci.org/alfg/mp4.svg?branch=master)](https://travis-ci.org/alfg/mp4) 
