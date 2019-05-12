@@ -6,6 +6,7 @@ type MinfBox struct {
 	Vmhd *VmhdBox
 	// Dinf *DinfBox
 	Stbl *StblBox
+	Hmhd *HmhdBox
 }
 
 func (b *MinfBox) parse() error {
@@ -20,6 +21,10 @@ func (b *MinfBox) parse() error {
 		case "stbl":
 			b.Stbl = &StblBox{Box: box}
 			b.Stbl.parse()
+
+		case "hmhd":
+			b.Hmhd = &HmhdBox{Box: box}
+			b.Hmhd.parse()
 		}
 	}
 	return nil
