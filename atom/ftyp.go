@@ -22,3 +22,7 @@ func (b *FtypBox) parse() error {
 	}
 	return nil
 }
+
+func (b *FtypBox) Parse() error {
+	return b.parse()
+}

@@ -105,3 +105,8 @@ func readBoxes(f *File, start int64, n int64) (l []*Box) {
 	}
 	return l
 }
+
+// Stupid, but necessary for my fork of the CLI tool (gwyneth 20191212).
+func ReadBoxes(f *File, start int64, n int64) (l []*Box) {
+	return readBoxes(f, start, n) 
+}
