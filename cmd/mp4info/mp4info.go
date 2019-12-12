@@ -25,7 +25,7 @@ func main() {
 	}
 
 	f, err := mp4.Open(input)
-	if err != nil {
+ 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return
 	}
@@ -38,9 +38,14 @@ func main() {
 	fmt.Printf("  brands:   %s, %s\n\n", f.Ftyp.MajorBrand, f.Ftyp.CompatibleBrands)
 
 	fmt.Println("Movie:")
-	fmt.Printf("  duration: %d ms / %d (%s)\n",
-		f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale,
-		atom.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
+
+	if (f.Moov != nil) {
+		fmt.Printf("  duration: %d ms / %d (%s)\n",
+			f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale,
+			atom.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
+	} else {
+		fmt.Printf("  MOOV atom not found...\n")
+	}
 	fmt.Printf("  fragments:    %t\n", f.IsFragmented)
 	fmt.Printf("  timescale:    %d\n\n", f.Moov.Mvhd.Timescale)
 
