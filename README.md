@@ -37,14 +37,14 @@ See [example.go](/example/example.go) for a full example.
 ## Develop 
 
 ```
-git clone github.com/alfg/mp4
-go run example/example.go
+git clone https://github.com/alfg/mp4.git
+go run example\example.go
 ```
 
 Or build the CLI:
 ```
-go build -o mp4info.exe cmd\mp4info\mp4info.go
-mp4info -i test/tears-of-steel.mp4
+go build -o mp4info cmd\mp4info\mp4info.go
+mp4info -i test\tears-of-steel.mp4
 ```
 
 ## Documentation
