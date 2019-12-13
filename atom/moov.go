@@ -44,6 +44,10 @@ func (b *MoovBox) parse() error {
 		case "mvex":
 			fmt.Println("found mvex")
 			b.IsFragmented = true
+			
+		default:
+			fmt.Printf("found [%s]\n\tSize: %d\n\tStart: %d\n\tFile: %+v\n\n", box.Name, box.Size, box.Start, box.File)
+
 		}
 
 	}
