@@ -9,7 +9,7 @@ type TrakBox struct {
 
 	Tkhd *TkhdBox
 	Mdia *MdiaBox
-	// edts *EdtsBox
+	Edts *EdtsBox
 	// chunks []Chunk
 	// samples []Sample
 }
@@ -29,7 +29,8 @@ func (b *TrakBox) parse() error {
 			b.Mdia.parse()
 
 		case "edts":
-			// fmt.Println("found edts")
+			b.Edts = &EdtsBox{Box: box}
+			b.Edts.parse()
 		}
 	}
 	return nil
