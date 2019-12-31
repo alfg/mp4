@@ -2,7 +2,6 @@ package atom
 
 import (
 	"encoding/binary"
-	"fmt"
 )
 
 // StsdBox - Sample Description Box
@@ -27,7 +26,6 @@ func (b *StsdBox) parse() error {
 	for _, box := range boxes {
 		switch box.Name {
 		case "avc1":
-			fmt.Println("found avc1")
 			b.Avc1 = &Avc1Box{Box: box}
 			b.Avc1.parse()
 		}
