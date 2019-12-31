@@ -1,5 +1,10 @@
 package atom
 
+// EdtsBox - Edit Box
+// Box Type: edts
+// Container: Track Box (trak)
+// Mandatory: No
+// Quantity: Zero or one
 type EdtsBox struct {
 	*Box
 	Elst *ElstBox
@@ -17,4 +22,3 @@ func (b *EdtsBox) parse() error {
 	}
 	return nil
 }
-

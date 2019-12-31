@@ -1,5 +1,5 @@
 # MP4
-Basic MP4 parser in Go!
+Basic MP4 reader in Go!
 
 CLI and library for ISO/IEC 14496-12 - ISO Base Media File Format (QuickTime, MPEG-4, HEIF, etc) 
 
@@ -49,7 +49,6 @@ mp4info -i test\tears-of-steel.mp4
 
 ## Documentation
 * [GoDocs](https://godoc.org/github.com/alfg/mp4)
-* [ISO/IEC 14496-12](/docs)
 
 ## License
 MIT

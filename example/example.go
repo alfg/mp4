@@ -1,5 +1,7 @@
 package main
 
+// Example usage of the mp4 package to print out basic mp4 metadata.
+
 import (
 	"fmt"
 
@@ -10,10 +12,10 @@ func main() {
 	file, _ := mp4.Open("test/tears-of-steel.mp4")
 	file.Close()
 
-	// fmt.Println(file.Ftyp.Name)
-	// fmt.Println(file.Ftyp.MajorBrand)
-	// fmt.Println(file.Ftyp.MinorVersion)
-	// fmt.Println(file.Ftyp.CompatibleBrands)
+	fmt.Println(file.Ftyp.Name)
+	fmt.Println(file.Ftyp.MajorBrand)
+	fmt.Println(file.Ftyp.MinorVersion)
+	fmt.Println(file.Ftyp.CompatibleBrands)
 
 	fmt.Println(file.Moov.Name, file.Moov.Size)
 	fmt.Println(file.Moov.Mvhd.Name)

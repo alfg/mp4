@@ -4,12 +4,16 @@ import (
 	"encoding/binary"
 )
 
-// FtypBox defines the ftyp box.
+// FtypBox - File Type Box
+// Box Type: ftyp
+// Container: File
+// Mandatory: Yes
+// Quantity: Exactly one
 type FtypBox struct {
 	*Box
-	MajorBrand       string
-	MinorVersion     uint32
-	CompatibleBrands []string
+	MajorBrand       string // Brand identifer.
+	MinorVersion     uint32 // Informative integer for the minor version of the major brand.
+	CompatibleBrands []string // A list, to the end of the box, of brands.
 }
 
 func (b *FtypBox) parse() error {
