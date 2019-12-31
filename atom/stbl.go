@@ -1,6 +1,10 @@
 package atom
 
-// StblBox defines the stbl box structure.
+// StblBox - Sample Table Box
+// Box Type: stbl
+// Container: Media Information Box (minf)
+// Mandatory: Yes
+// Quantity: Exactly one.
 type StblBox struct {
 	*Box
 	Stts *SttsBox

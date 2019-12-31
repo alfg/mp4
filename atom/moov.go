@@ -11,7 +11,15 @@ const (
 	TrackFlagInPreview = 0x0004
 )
 
-// MoovBox defines the moov box structure.
+// MoovBox - Movie Box
+// Box Type: moov
+// Container: File
+// Mandatory: Yes
+// Quantity: Exactly one.
+//
+// The metadata for a presentation is stored in the single Movie Box which occurs
+// at the top-level of a file. Normally this box is close to the beginning or end
+// of the file, though this is not required.
 type MoovBox struct {
 	*Box
 	Mvhd  *MvhdBox

@@ -5,7 +5,11 @@ import (
 	"fmt"
 )
 
-// StsdBox defines the stsd box structure.
+// StsdBox - Sample Description Box
+// Box Type: stsd
+// Container: Sample Table Box (stbl)
+// Mandatory: Yes
+// Quantity: Exactly one.
 type StsdBox struct {
 	*Box
 	Version byte

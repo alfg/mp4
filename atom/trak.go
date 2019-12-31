@@ -1,6 +1,10 @@
 package atom
 
-// TrakBox defines the trak box structure.
+// TrakBox - Track Box
+// Box Type: tkhd
+// Container: Movie Box (moov)
+// Mandatory: Yes
+// Quantity: One or more.
 type TrakBox struct {
 	*Box
 	// SamplesDuration

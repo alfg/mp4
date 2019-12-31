@@ -5,7 +5,14 @@ import (
 	"fmt"
 )
 
-// MdhdBox defines the mdhd box structure.
+// MdhdBox - Media Header Box
+// Box Type: mdhd
+// Container: Media Box (mdia)
+// Mandatory: Yes
+// Quantity: Any number.
+//
+// The media header declares overall information that is media-independent,
+// and relevant to characteristics of the media in a track.
 type MdhdBox struct {
 	*Box
 	Version          byte

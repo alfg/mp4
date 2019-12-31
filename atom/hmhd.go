@@ -2,7 +2,13 @@ package atom
 
 import "encoding/binary"
 
-// HmhdBox contains general information, independent of the protocol, for hint tracks.
+// HmhdBox - Hint Media Header Box
+// Box Type: hmhd
+// Container: Media Information Box (minf).
+// Mandatory: Yes
+// Quantity: Exactly one specific media header shall be present.
+//
+// Contains general information, independent of the protocol, for hint tracks.
 type HmhdBox struct {
 	*Box
 	Version    byte

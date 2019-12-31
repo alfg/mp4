@@ -2,7 +2,11 @@ package atom
 
 import "encoding/binary"
 
-// SttsBox defines the stts box structure.
+// SttsBox - Decoding Time to Sample Box
+// Box Type: stts
+// Container: Sample Table Box (stbl)
+// Mandatory: Yes
+// Quantity: Exactly one.
 type SttsBox struct {
 	*Box
 	Version      byte

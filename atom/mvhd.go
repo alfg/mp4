@@ -4,7 +4,14 @@ import (
 	"encoding/binary"
 )
 
-// MvhdBox defines the mvhd box structure.
+// MvhdBox - Movie Header Box
+// Box Type: mvhd
+// Container: Movie Box (moov)
+// Mandatory: Yes
+// Quantity: Exactly one.
+//
+// This box defines overall information which is media-independent,
+// and relevant to the entire presentationconsidered as a whole.
 type MvhdBox struct {
 	*Box
 	Flags            uint32

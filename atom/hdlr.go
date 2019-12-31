@@ -2,7 +2,11 @@ package atom
 
 import "encoding/binary"
 
-// HdlrBox defines the hdlr box structure.
+// HdlrBox - Handler Reference Box
+// Box Type: hdlr
+// Container: Media Box (mdia) or Meta Box (meta)
+// Mandatory: Yes
+// Quantity: Exactly one
 type HdlrBox struct {
 	*Box
 	Version byte

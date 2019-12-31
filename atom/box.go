@@ -22,7 +22,7 @@ type File struct {
 	IsFragmented bool
 }
 
-// Parse parses an MP4 file for atom boxes.
+// Parse reads an MP4 file for atom boxes.
 func (f *File) Parse() error {
 	info, err := f.Stat()
 	if err != nil {

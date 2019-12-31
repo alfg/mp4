@@ -2,7 +2,11 @@ package atom
 
 import "encoding/binary"
 
-// VmhdBox defines the vmhd box structure.
+// VmhdBox - Video Media Header Box
+// Box Type: vmhd
+// Container: Media Information Box (minf)
+// Mandatory: Yes
+// Quantity: Exactly one specific media header shall be present.
 type VmhdBox struct {
 	*Box
 	Version      byte

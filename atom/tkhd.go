@@ -4,7 +4,11 @@ import (
 	"encoding/binary"
 )
 
-// TkhdBox defines the track header box structure.
+// TkhdBox - Track Header Box
+// Box Type: tkhd
+// Container: Track Box (trak)
+// Mandatory: Yes
+// Quantity: Exactly one.
 type TkhdBox struct {
 	*Box
 	Version          byte

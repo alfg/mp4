@@ -1,6 +1,13 @@
 package atom
 
-// MinfBox defines the minf box structure.
+// MinfBox - Media Information Box
+// Box Type: minf
+// Container: Media Box (mdia)
+// Mandatory: Yes
+// Quantity: Exactly one.
+//
+// This box contains all the objects that declare characteristics information of the
+// media in the track.
 type MinfBox struct {
 	*Box
 	Vmhd *VmhdBox
