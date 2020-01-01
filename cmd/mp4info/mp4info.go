@@ -14,37 +14,37 @@ import (
 
 const tmpl = `
 File:
-  file size: {{.Size}}
-  brands: {{.Ftyp.MajorBrand}} {{.Ftyp.CompatibleBrands}}
+  file size:    {{.Size}}
+  brands:       {{.Ftyp.MajorBrand}} {{.Ftyp.CompatibleBrands}}
 
 Movie:
-  duration: {{.Moov.Mvhd.Duration}} ms / {{.Moov.Mvhd.Timescale}} ({{getDurationString .Moov.Mvhd.Duration .Moov.Mvhd.Timescale}})
-  fragments: {{.IsFragmented}}
-  timescale: {{.Moov.Mvhd.Timescale}}
+  duration:     {{.Moov.Mvhd.Duration}} ms / {{.Moov.Mvhd.Timescale}} ({{getDurationString .Moov.Mvhd.Duration .Moov.Mvhd.Timescale}})
+  fragments:    {{.IsFragmented}}
+  timescale:    {{.Moov.Mvhd.Timescale}}
 
-  Found {{len .Moov.Traks}} Tracks
-  {{- range $trak := .Moov.Traks}}
-  Track: {{$trak.Tkhd.TrackID}}
-    flags: {{$trak.Tkhd.Flags}} {{getFlags $trak.Tkhd.Flags}}
-    id: {{$trak.Tkhd.TrackID}}
-    type: {{getHandlerType $trak.Mdia.Hdlr.Handler}}
-    duration: {{$trak.Tkhd.Duration}}
-    language: {{$trak.Mdia.Mdhd.LanguageString}}
-    width: {{to16 $trak.Tkhd.Width}}
-    height: {{to16 $trak.Tkhd.Height}}
-    media:
-      sample count: {{index $trak.Mdia.Minf.Stbl.Stts.SampleCounts 0}}
-      timescale: {{$trak.Mdia.Mdhd.Timescale}}
-      duration: {{$trak.Mdia.Mdhd.Duration}} (media timescale units)
-      duration: {{getDurationMS $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}} (ms)
-    {{- if (or (ne $trak.Tkhd.GetWidth 0) (ne $trak.Tkhd.GetHeight 0)) }}
-      display width: {{$trak.Tkhd.GetWidth}}
-      display width: {{$trak.Tkhd.GetHeight}}
-    {{- end}}
-    {{- if (eq (getHandlerType $trak.Mdia.Hdlr.Handler) "Video")}}
-      frame rate (computed): {{getFramerate $trak.Mdia.Minf.Stbl.Stts.SampleCounts $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}}
-    {{- end}}
+Found {{len .Moov.Traks}} Tracks 
+{{range $trak := .Moov.Traks}}
+Track: {{$trak.Tkhd.TrackID}}
+  flags:    {{$trak.Tkhd.Flags}} {{getFlags $trak.Tkhd.Flags}}
+  id:       {{$trak.Tkhd.TrackID}}
+  type:     {{getHandlerType $trak.Mdia.Hdlr.Handler}}
+  duration: {{$trak.Tkhd.Duration}} ms
+  language: {{$trak.Mdia.Mdhd.LanguageString}}
+  width:    {{to16 $trak.Tkhd.Width}}
+  height:   {{to16 $trak.Tkhd.Height}}
+  media:
+    sample count:   {{index $trak.Mdia.Minf.Stbl.Stts.SampleCounts 0}}
+    timescale:      {{$trak.Mdia.Mdhd.Timescale}}
+    duration:       {{$trak.Mdia.Mdhd.Duration}} (media timescale units)
+    duration:       {{getDurationMS $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}} (ms)
+  {{- if (or (ne $trak.Tkhd.GetWidth 0) (ne $trak.Tkhd.GetHeight 0)) }}
+    display width:  {{$trak.Tkhd.GetWidth}}
+    display width:  {{$trak.Tkhd.GetHeight}}
   {{- end}}
+  {{- if (eq (getHandlerType $trak.Mdia.Hdlr.Handler) "Video")}}
+    frame rate (computed): {{getFramerate $trak.Mdia.Minf.Stbl.Stts.SampleCounts $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}}
+  {{- end}}
+{{- end}}
 `
 
 var input string
