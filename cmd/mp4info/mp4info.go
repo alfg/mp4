@@ -6,10 +6,46 @@ import (
 	"math"
 	"os"
 	"strings"
+	"text/template"
 
 	"github.com/alfg/mp4"
 	"github.com/alfg/mp4/atom"
 )
+
+const tmpl = `
+File:
+  file size:    {{.Size}}
+  brands:       {{.Ftyp.MajorBrand}} {{.Ftyp.CompatibleBrands}}
+
+Movie:
+  duration:     {{.Moov.Mvhd.Duration}} ms / {{.Moov.Mvhd.Timescale}} ({{getDurationString .Moov.Mvhd.Duration .Moov.Mvhd.Timescale}})
+  fragments:    {{.IsFragmented}}
+  timescale:    {{.Moov.Mvhd.Timescale}}
+
+Found {{len .Moov.Traks}} Tracks 
+{{range $trak := .Moov.Traks}}
+Track: {{$trak.Tkhd.TrackID}}
+  flags:    {{$trak.Tkhd.Flags}} {{getFlags $trak.Tkhd.Flags}}
+  id:       {{$trak.Tkhd.TrackID}}
+  type:     {{getHandlerType $trak.Mdia.Hdlr.Handler}}
+  duration: {{$trak.Tkhd.Duration}} ms
+  language: {{$trak.Mdia.Mdhd.LanguageString}}
+  width:    {{to16 $trak.Tkhd.Width}}
+  height:   {{to16 $trak.Tkhd.Height}}
+  media:
+    sample count:   {{index $trak.Mdia.Minf.Stbl.Stts.SampleCounts 0}}
+    timescale:      {{$trak.Mdia.Mdhd.Timescale}}
+    duration:       {{$trak.Mdia.Mdhd.Duration}} (media timescale units)
+    duration:       {{getDurationMS $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}} (ms)
+  {{- if (or (ne $trak.Tkhd.GetWidth 0) (ne $trak.Tkhd.GetHeight 0)) }}
+    display width:  {{$trak.Tkhd.GetWidth}}
+    display width:  {{$trak.Tkhd.GetHeight}}
+  {{- end}}
+  {{- if (eq (getHandlerType $trak.Mdia.Hdlr.Handler) "Video")}}
+    frame rate (computed): {{getFramerate $trak.Mdia.Minf.Stbl.Stts.SampleCounts $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}}
+  {{- end}}
+{{- end}}
+`
 
 var input string
 
@@ -32,49 +68,33 @@ func main() {
 
 	defer f.Close()
 
-	// Print out mp4 info.
-	fmt.Println("File:")
-	fmt.Printf("  file Size:    %d\n", f.Size)
-	fmt.Printf("  brands:   %s, %s\n\n", f.Ftyp.MajorBrand, f.Ftyp.CompatibleBrands)
-
-	fmt.Println("Movie:")
-	fmt.Printf("  duration: %d ms / %d (%s)\n",
-		f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale,
-		atom.GetDurationString(f.Moov.Mvhd.Duration, f.Moov.Mvhd.Timescale))
-	fmt.Printf("  fragments:    %t\n", f.IsFragmented)
-	fmt.Printf("  timescale:    %d\n\n", f.Moov.Mvhd.Timescale)
-
-	fmt.Printf("Found %d Tracks\n\n", len(f.Moov.Traks))
-
-	for _, trak := range f.Moov.Traks {
-		fmt.Printf("Track %d:\n", trak.Tkhd.TrackID)
-		fmt.Printf("  flags:    %d %s\n", trak.Tkhd.Flags, getFlags(trak.Tkhd.Flags))
-		fmt.Printf("  id:       %d\n", trak.Tkhd.TrackID)
-		fmt.Printf("  type:     %s\n", getHandlerType(trak.Mdia.Hdlr.Handler))
-		fmt.Printf("  duration: %d ms\n", trak.Tkhd.Duration)
-		fmt.Printf("  language: %s\n", trak.Mdia.Mdhd.LanguageString)
-		fmt.Printf("  width:    %d\n", trak.Tkhd.Width/(1<<16))
-		fmt.Printf("  height:   %d\n", trak.Tkhd.Height/(1<<16))
-
-		fmt.Println("  media:")
-		fmt.Printf("    sample count:   %d\n", trak.Mdia.Minf.Stbl.Stts.SampleCounts[0])
-		fmt.Printf("    timescale:      %d\n", trak.Mdia.Mdhd.Timescale)
-		fmt.Printf("    duration:       %d (media timescale units)\n", trak.Mdia.Mdhd.Duration)
-		fmt.Printf("    duration:       %02.0f (ms)\n", math.Floor(float64(trak.Mdia.Mdhd.Duration)/float64(trak.Mdia.Mdhd.Timescale)*1000))
-
-		if trak.Tkhd.GetWidth() != 0 || trak.Tkhd.GetHeight() != 0 {
-			fmt.Printf("  display width:         %d\n", trak.Tkhd.GetWidth())
-			fmt.Printf("  display height:        %d\n", trak.Tkhd.GetHeight())
-		}
-
-		if getHandlerType(trak.Mdia.Hdlr.Handler) == "Video" {
-			sampleCounts := 1000 * trak.Mdia.Minf.Stbl.Stts.SampleCounts[0]
-			durationMs := math.Floor(float64(trak.Mdia.Mdhd.Duration) / float64(trak.Mdia.Mdhd.Timescale) * 1000)
-			fmt.Printf("  frame rate (computed): %.2f\n", float64(sampleCounts)/durationMs)
-		}
-		fmt.Println("")
+	funcMap := template.FuncMap{
+		"getDurationString": atom.GetDurationString,
+		"getFlags":          getFlags,
+		"getHandlerType":    getHandlerType,
+		"to16":              to16,
+		"getDurationMS":     getDurationMS,
+		"getFramerate":      getFramerate,
 	}
 
+	t := template.Must(template.New("tmpl").Funcs(funcMap).Parse(tmpl))
+	if err := t.Execute(os.Stdout, f); err != nil {
+		panic(err)
+	}
+}
+
+func getFramerate(sampleCounts []uint32, duration, timescale uint32) string {
+	sc := 1000 * sampleCounts[0]
+	durationMS := math.Floor(float64(duration) / float64(timescale) * 1000)
+	return fmt.Sprintf("%.2f", float64(sc)/durationMS)
+}
+
+func getDurationMS(duration, timescale uint32) string {
+	return fmt.Sprintf("%.2f", math.Floor(float64(duration)/float64(timescale)*1000))
+}
+
+func to16(i atom.Fixed32) int {
+	return int(i / (1 << 16))
 }
 
 func getHandlerType(handler string) string {
