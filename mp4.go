@@ -1,7 +1,7 @@
 package mp4
 
 import (
-	"fmt"
+	"io"
 	"os"
 
 	"github.com/alfg/mp4/atom"
@@ -11,12 +11,27 @@ import (
 func Open(path string) (f *atom.File, err error) {
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		return nil, err
+	}
+
+	size, err := file.Seek(0, io.SeekEnd)
+	if err != nil {
+		return nil, err
+	} else if _, err := file.Seek(0, io.SeekStart); err != nil {
 		return nil, err
 	}
 
 	f = &atom.File{
-		File: file,
+		Closer:        file,
+		SectionReader: io.NewSectionReader(file, 0, size),
+	}
+
+	return f, f.Parse()
+}
+
+func OpenStream(at io.ReaderAt, off, l int64) (f *atom.File, err error) {
+	f = &atom.File{
+		SectionReader: io.NewSectionReader(at, off, l),
 	}
 
 	return f, f.Parse()

@@ -3,7 +3,7 @@ package atom
 import (
 	"encoding/binary"
 	"fmt"
-	"os"
+	"io"
 )
 
 const (
@@ -13,27 +13,25 @@ const (
 
 // File defines a file structure.
 type File struct {
-	*os.File
-	Ftyp *FtypBox
-	Moov *MoovBox
-	Mdat *MdatBox
-	Size int64
+	*io.SectionReader
+	Closer io.Closer
+	Ftyp   *FtypBox
+	Moov   *MoovBox
+	Mdat   *MdatBox
 
 	IsFragmented bool
 }
 
+func (f *File) Close() error {
+	if f.Closer != nil {
+		return f.Closer.Close()
+	}
+	return nil
+}
+
 // Parse reads an MP4 file for atom boxes.
 func (f *File) Parse() error {
-	info, err := f.Stat()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		return err
-	}
-
-	// fmt.Printf("Filesize: %v \n", info.Size())
-	f.Size = info.Size()
-
-	boxes := readBoxes(f, int64(0), f.Size)
+	boxes := readBoxes(f, int64(0), f.Size())
 	for _, box := range boxes {
 		switch box.Name {
 		case "ftyp":
