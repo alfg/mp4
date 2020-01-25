@@ -58,8 +58,6 @@ func (f *File) Parse() error {
 func (f *File) ReadBoxAt(offset int64) (boxSize uint32, boxType string) {
 	buf := f.ReadBytesAt(BoxHeaderSize, offset)
 	boxSize = binary.BigEndian.Uint32(buf[0:4])
-	offset += BoxHeaderSize
-
 	boxType = string(buf[4:8])
 	return boxSize, boxType
 }
