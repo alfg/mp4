@@ -21,3 +21,13 @@ func TestOpen(t *testing.T) {
 		t.Error()
 	}
 }
+
+func BenchmarkOpen(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		file, err := Open(testFile)
+		if err != nil {
+			b.Error()
+		}
+		file.Close()
+	}
+}

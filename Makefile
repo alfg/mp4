@@ -5,6 +5,9 @@ BINARY=mp4
 test:
 	go test ./...
 
+bench:
+	go test -benchmem -run=XXX -bench=.
+
 build:
 	go build
 
