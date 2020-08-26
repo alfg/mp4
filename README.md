@@ -1,7 +1,7 @@
 # MP4
 Basic MP4 reader in Go!
 
-CLI and library for ISO/IEC 14496-12 - ISO Base Media File Format (QuickTime, MPEG-4, HEIF, etc) 
+CLI and library for ISO/IEC 14496-12 - ISO Base Media File Format
 
 https://godoc.org/github.com/alfg/mp4
 
