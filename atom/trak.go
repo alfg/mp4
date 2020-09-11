@@ -14,12 +14,9 @@ type TrakBox struct {
 	Tkhd *TkhdBox
 	Mdia *MdiaBox
 	Edts *EdtsBox
-	// chunks []Chunk
-	// samples []Sample
 }
 
 func (b *TrakBox) parse() error {
-	// fmt.Println("read subboxes starting from ", b.Start, "with size: ", b.Size)
 	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
 
 	for _, box := range boxes {
@@ -39,8 +36,3 @@ func (b *TrakBox) parse() error {
 	}
 	return nil
 }
-
-// func (b *TrakBox) Size() (sz int) {
-//     sz += b.Tkhd.Size
-// 	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
-// }

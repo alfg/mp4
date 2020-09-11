@@ -30,7 +30,6 @@ func (f *File) Parse() error {
 		return err
 	}
 
-	// fmt.Printf("Filesize: %v \n", info.Size())
 	f.Size = info.Size()
 
 	boxes := readBoxes(f, int64(0), f.Size)
@@ -39,11 +38,8 @@ func (f *File) Parse() error {
 		case "ftyp":
 			f.Ftyp = &FtypBox{Box: box}
 			f.Ftyp.parse()
-		case "wide":
-			// fmt.Println("found wide")
 		case "mdat":
 			f.Mdat = &MdatBox{Box: box}
-			// No mdat boxes to parse
 		case "moov":
 			f.Moov = &MoovBox{Box: box}
 			f.Moov.parse()
