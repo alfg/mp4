@@ -1,9 +1,5 @@
 package atom
 
-import (
-	"fmt"
-)
-
 // Flag constants.
 const (
 	TrackFlagEnabled   = 0x0001
@@ -29,7 +25,6 @@ type MoovBox struct {
 }
 
 func (b *MoovBox) parse() error {
-	// fmt.Println("read subboxes starting from ", b.Start, "with size: ", b.Size)
 	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
 
 	for _, box := range boxes {
@@ -38,22 +33,14 @@ func (b *MoovBox) parse() error {
 			b.Mvhd = &MvhdBox{Box: box}
 			b.Mvhd.parse()
 
-		case "iods":
-			// fmt.Println("found iods")
-
 		case "trak":
 			trak := &TrakBox{Box: box}
 			trak.parse()
 			b.Traks = append(b.Traks, trak)
 
-		case "udta":
-			// fmt.Println("found udta")
-
 		case "mvex":
-			fmt.Println("found mvex")
 			b.IsFragmented = true
 		}
-
 	}
 	return nil
 }
