@@ -25,7 +25,7 @@ type MoovBox struct {
 }
 
 func (b *MoovBox) parse() error {
-	boxes := readBoxes(b.File, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
+	boxes := readBoxes(b.Reader, b.Start+BoxHeaderSize, b.Size-BoxHeaderSize)
 
 	for _, box := range boxes {
 		switch box.Name {
