@@ -20,7 +20,7 @@ type sizer interface {
 }
 
 func upload(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
+	if r.Method == "GET" {
 		w.Write([]byte(`invalid method`))
 	}
 	r.ParseMultipartForm(10 << 20)
