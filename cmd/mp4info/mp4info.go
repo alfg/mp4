@@ -15,7 +15,7 @@ import (
 const tmpl = `
 File:
   file size:    {{.Size}}
-  brands:       {{.Ftyp.MajorBrand}} {{.Ftyp.CompatibleBrands}}
+  brands:       {{.Ftyp.MajorBrand}} {{.Ftyp.MinorVersion}} {{.Ftyp.CompatibleBrands}}
 
 Movie:
   duration:     {{.Moov.Mvhd.Duration}} ms / {{.Moov.Mvhd.Timescale}} ({{getDurationString .Moov.Mvhd.Duration .Moov.Mvhd.Timescale}})
@@ -66,7 +66,7 @@ func main() {
 		return
 	}
 
-	defer f.Close()
+	// defer f.Close()
 
 	funcMap := template.FuncMap{
 		"getDurationString": atom.GetDurationString,
