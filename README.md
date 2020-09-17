@@ -45,7 +45,7 @@ func main() {
 }
 ```
 
-See [example.go](/example/example.go) for a full example.
+See [examples/](/examples/) for more examples.
 
 ## Develop 
 
