@@ -22,6 +22,7 @@ func main() {
 	fmt.Println(mp4.Moov.Mvhd.Volume)
 
 	fmt.Println("trak size: ", mp4.Moov.Traks[0].Size)
+	fmt.Println("mdhd language: ", mp4.Moov.Traks[0].Mdia.Mdhd.LanguageString)
 	fmt.Println("trak size: ", mp4.Moov.Traks[1].Size)
 	fmt.Println("mdat size: ", mp4.Mdat.Size)
 }

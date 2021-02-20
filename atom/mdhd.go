@@ -44,7 +44,7 @@ func getLanguageString(language uint16) string {
 	lang[1] = (language >> 5) & 0x1F
 	lang[2] = (language) & 0x1F
 	return fmt.Sprintf("%s%s%s",
-		string(lang[0]+0x60),
-		string(lang[1]+0x60),
-		string(lang[2]+0x60))
+		string(rune(lang[0]+0x60)),
+		string(rune(lang[1]+0x60)),
+		string(rune(lang[2]+0x60)))
 }
