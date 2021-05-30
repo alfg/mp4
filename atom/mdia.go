@@ -5,7 +5,7 @@ package atom
 // Container: Track Box (trak)
 // Mandatory: Yes
 // Quantity: Exactly one.
-// The mediaa declaration container contains all the objects that declare information
+// The media declaration container contains all the objects that declare information
 // about the media data within a track.
 type MdiaBox struct {
 	*Box
