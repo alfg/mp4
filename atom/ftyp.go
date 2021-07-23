@@ -2,6 +2,7 @@ package atom
 
 import (
 	"encoding/binary"
+	"errors"
 )
 
 // FtypBox - File Type Box
@@ -18,6 +19,9 @@ type FtypBox struct {
 
 func (b *FtypBox) parse() error {
 	data := b.ReadBoxData()
+	if len(data) < 8 {
+		return errors.New("not enough data")
+	}
 	b.MajorBrand, b.MinorVersion = string(data[0:4]), binary.BigEndian.Uint32(data[4:8])
 	if len(data) > 8 {
 		for i := 8; i < len(data); i += 4 {

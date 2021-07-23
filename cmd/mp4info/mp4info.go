@@ -62,7 +62,6 @@ func main() {
 
 	f, err := mp4.Open(input)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		return
 	}
 
