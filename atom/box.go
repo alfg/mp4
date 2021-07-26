@@ -64,6 +64,10 @@ func (m *Mp4Reader) ReadBoxAt(offset int64) (boxSize uint32, boxType string) {
 		return 0, ""
 	}
 	boxSize = binary.BigEndian.Uint32(buf[0:4])
+	// check malformed data
+	if offset+int64(boxSize) > m.Size {
+		return 0, ""
+	}
 	boxType = string(buf[4:8])
 	return
 }
