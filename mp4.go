@@ -2,7 +2,6 @@ package mp4
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 
@@ -13,7 +12,6 @@ import (
 func Open(path string) (f *atom.Mp4Reader, err error) {
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		return nil, err
 	}
 
