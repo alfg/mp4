@@ -33,7 +33,9 @@ Track: {{$trak.Tkhd.TrackID}}
   width:    {{to16 $trak.Tkhd.Width}}
   height:   {{to16 $trak.Tkhd.Height}}
   media:
+  {{- if  (ne $trak.Mdia.Minf.Stbl.Stts.EntryCount 0) }}
     sample count:   {{index $trak.Mdia.Minf.Stbl.Stts.SampleCounts 0}}
+  {{- end}}
     timescale:      {{$trak.Mdia.Mdhd.Timescale}}
     duration:       {{$trak.Mdia.Mdhd.Duration}} (media timescale units)
     duration:       {{getDurationMS $trak.Mdia.Mdhd.Duration $trak.Mdia.Mdhd.Timescale}} (ms)

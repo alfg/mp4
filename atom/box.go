@@ -17,6 +17,7 @@ type Mp4Reader struct {
 	Reader io.ReaderAt
 	Ftyp   *FtypBox
 	Moov   *MoovBox
+	Moof   *MoofBox
 	Mdat   *MdatBox
 	Uuids  []*UuidBox
 	Size   int64
@@ -48,6 +49,9 @@ func (m *Mp4Reader) Parse() error {
 			m.Moov = &MoovBox{Box: box}
 			_ = m.Moov.parse()
 			m.IsFragmented = m.Moov.IsFragmented
+		case "moof":
+			m.Moof = &MoofBox{Box: box}
+			_ = m.Moof.parse()
 		case "uuid":
 			uuidBox := &UuidBox{Box: box}
 			_ = uuidBox.parse()
